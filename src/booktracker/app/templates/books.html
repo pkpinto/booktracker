@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-6">
+        {% for b in books %}
+        <div class="col mt-4">
+            <div class="card h-100">
+                <a href="/assets/{{b['assetid']}}">
+                    <img src="/assets/{{b['assetid']}}/artwork" class="card-img-top" alt="{{b['assetid']}}">
+                </a>
+                <div class="card-body">
+                    {% if b['series'] %}
+                    <p class="card-text small my-0">{{b['series']}}</p>
+                    {% endif %}
+                    <h5 class="card-title">{{b['title']}}</h5>
+                    {% if b['subtitle'] %}
+                    <p class="card-text small">{{b['subtitle']}}</p>
+                    {% endif %}
+                    <p class="card-text font-weight-light">{{b['author']}}</p>
+                    <a href="{{b['ibooks_link']}}" class="btn btn-primary">read</a>
+                </div>
+                <div class="card-footer text-muted">
+                    <p class="card-text small"><nobr>{{b['publisher']}}</nobr>, <nobr>{{b['date']}}</nobr></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

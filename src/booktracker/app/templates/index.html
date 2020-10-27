@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div id="index-carousel" class="carousel slide col-8 mx-auto" data-ride="carousel">
+            <div class="carousel-inner">
+                {% for b in books %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="/assets/{{b['assetid']}}/artwork" class="d-block w-100" alt="{{b['assetid']}}">
+                </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#index-carousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">previous</span>
+            </a>
+            <a class="carousel-control-next" href="#index-carousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">next</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
