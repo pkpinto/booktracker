@@ -6,8 +6,8 @@
         {% for b in books %}
         <div class="col mt-4">
             <div class="card h-100">
-                <a href="/assets/{{b['assetid']}}">
-                    <img src="/assets/{{b['assetid']}}/artwork" class="card-img-top" alt="{{b['assetid']}}">
+                <a href="/books/{{b['assetid']}}">
+                    <img src="/books/{{b['assetid']}}/artwork" class="card-img-top" alt="{{b['assetid']}}">
                 </a>
                 <div class="card-body">
                     {% if b['series'] %}

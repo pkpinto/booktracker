@@ -1,0 +1,9 @@
+{% extends "asset.html" %}
+
+{% block artwork %}
+<img src="{{books[0]['artwork_url']}}" class="img-fluid" alt="{{books[0]['assetid']}}">
+{% endblock %}
+
+{% block buttons %}
+<a href="{{url_for('_asset_add', assetid=books[0]['assetid'])}}" class="btn btn-info">add</a>
+{% endblock %}

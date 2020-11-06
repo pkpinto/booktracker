@@ -4,17 +4,20 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-4 mt-4">
-            <img src="{{books[0]['assetid']}}/artwork" class="img-fluid" alt="{{books[0]['assetid']}}">
+            {% block artwork %}{% endblock %}
         </div>
         <div class="col-sm-8 mt-4">
-                {% if books[0]['series'] %}<p class="my-0">{{books[0]['series']}}</p>{% endif %}
-                <h3>{{books[0]['title']}}</h3>
-                {% if books[0]['subtitle'] %}<p">{{books[0]['subtitle']}}</p>{% endif %}
-                <p class="font-weight-light">{{books[0]['author']}}</p>
-                <a href="{{books[0]['ibooks_link']}}" class="btn btn-primary">read</a>
-                <p class="text-muted mt-4"><nobr>{{books[0]['publisher']}}</nobr>, <nobr>{{books[0]['date']}}</nobr></p>
-                <p class="font-weight-light">{{books[0]['description']}}</p>
-            </div>
+
+            {% if books[0]['series'] %}<p class="my-0">{{books[0]['series']}}</p>{% endif %}
+            <h3>{{books[0]['title']}}</h3>
+            {% if books[0]['subtitle'] %}<p">{{books[0]['subtitle']}}</p>{% endif %}
+            <p class="font-weight-light">{{books[0]['author']}}</p>
+
+            {% block buttons %}{% endblock %}
+
+            <p class="text-muted mt-4"><nobr>{{books[0]['publisher']}}</nobr>, <nobr>{{books[0]['date']}}</nobr></p>
+            <p class="font-weight-light">{{books[0]['description']}}</p>
+
         </div>
     </div>
 </div>

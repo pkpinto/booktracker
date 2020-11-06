@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div id="index-carousel" class="carousel slide col-8 mx-auto" data-ride="carousel">
             <div class="carousel-inner">
                 {% for b in books %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                    <img src="/assets/{{b['assetid']}}/artwork" class="d-block w-100" alt="{{b['assetid']}}">
+                    <img src="/books/{{b['assetid']}}/artwork" class="d-block w-100" alt="{{b['assetid']}}">
                 </div>
                 {% endfor %}
             </div>

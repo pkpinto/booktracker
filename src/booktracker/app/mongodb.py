@@ -1,5 +1,6 @@
-from flask import Markup
 from pymongo.mongo_client import MongoClient
+
+from .data_util import asset_to_book
 
 
 class Mongodb():
@@ -8,7 +9,7 @@ class Mongodb():
         self.db = MongoClient('localhost')['booktracker']
 
     def books(self, filter=None):
-
+        # do a 'join' between asset and content_data
         pipeline = [
             {
                 '$lookup': {
@@ -28,22 +29,6 @@ class Mongodb():
             },
             { '$project': { 'content_metadata': False } },
             # {_id:..., ..., results: {_id: {...}}}
-            {
-                '$replaceRoot': {
-                    'newRoot': {
-                        '$mergeObjects': [ { '$arrayElemAt': [ { '$objectToArray': '$results' }, 0 ] }, '$$ROOT' ]
-                    },
-                }
-            },
-            { '$project': { 'results': False, 'version': False, 'isAuthenticated': False } },
-            {
-                '$replaceRoot': {
-                    'newRoot': {
-                        '$mergeObjects': [ '$v', '$$ROOT' ]
-                    },
-                }
-            },
-            { '$project': { 'k': False, 'v': False } },
         ]
 
         # $match should as early as possible in the pipeline
@@ -51,18 +36,15 @@ class Mongodb():
             pipeline = [{'$match': filter},] + pipeline
 
         _books = []
-        for b in self.db['assets'].aggregate(pipeline):
-            _books.append({
-                'assetid': b['_id'],
-                'title': b['name'],
-                'subtitle': b['ebookInfo']['subtitle'],
-                'series': (None if b['ebookInfo'].get('seriesInfo') is None else
-                        ' '.join([b['ebookInfo']['seriesInfo']['seriesName'], b['ebookInfo']['seriesInfo']['sequenceDisplayLabel']])),
-                'author': b['artistName'],
-                'publisher': b['ebookInfo']['publisher'],
-                'date': b['releaseDate'],
-                'ibooks_link': b['ibooks_link'],
-                'description': Markup(b['description']['standard']),
-            })
+        for a in self.db['assets'].aggregate(pipeline):
+            _books.append(asset_to_book(a))
 
         return _books
+
+    def upsert_book(self, assetid, asset, content_metadata):
+        self.db['assets'].replace_one({'_id': assetid}, asset, upsert=True)
+        self.db['content_metadata'].replace_one({'_id': assetid}, content_metadata, upsert=True)
+
+    def delete_book(self, assetid):
+        self.db['assets'].delete_one({'_id': assetid})
+        self.db['content_metadata'].delete_one({'_id': assetid})

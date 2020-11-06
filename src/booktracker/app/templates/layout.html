@@ -37,8 +37,8 @@
                     <a class="nav-link disabled" href="#">publishers</a>
                 </div>
 
-                <form class="form-inline-sm my-2 my-md-0">
-                    <input class="form-control" type="search" placeholder="search" aria-label="search">
+                <form class="form-inline-sm my-2 my-md-0" action="{{url_for('_asset_get')}}">
+                    <input class="form-control" type="text" name="assetid", placeholder="assetid" aria-label="assetid">
                 </form>
             </div>
         </nav>
