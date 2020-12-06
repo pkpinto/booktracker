@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-6">
+    <div class="row row-cols-2 row-cols-sm-4 row-cols-lg-5 row-cols-xl-6">
         {% for b in books %}
         <div class="col mt-4">
             <div class="card h-100">
@@ -21,7 +21,7 @@
                     <a href="{{b['ibooks_link']}}" class="btn btn-primary">read</a>
                 </div>
                 <div class="card-footer text-muted">
-                    <p class="card-text small"><nobr>{{b['publisher']}}</nobr>, <nobr>{{b['date']}}</nobr></p>
+                    <p class="card-text small"><nobr>{{b['publisher']}},</nobr> <nobr>{{b['date']}}</nobr></p>
                 </div>
             </div>
         </div>

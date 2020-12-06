@@ -6,13 +6,14 @@ import requests
 
 def asset_to_book(asset):
     asset_results = asset['results'][asset['_id']]
+    series_info = asset_results['ebookInfo'].get('seriesInfo')
     return {
         'assetid': asset['_id'],
         'ibooks_link': asset['ibooks_link'],
         'title': asset_results['name'],
         'subtitle': asset_results['ebookInfo']['subtitle'],
         'series': (None if asset_results['ebookInfo'].get('seriesInfo') is None else
-                   ' '.join([asset_results['ebookInfo']['seriesInfo']['seriesName'], asset_results['ebookInfo']['seriesInfo']['sequenceDisplayLabel']])),
+                   ' '.join([series_info['seriesName'], '' if series_info['sequenceDisplayLabel'] is None else series_info['sequenceDisplayLabel']])),
         'author': asset_results['artistName'],
         'publisher': asset_results['ebookInfo']['publisher'],
         'date': asset_results['releaseDate'],
