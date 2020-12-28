@@ -11,9 +11,8 @@ def asset_to_book(asset):
         'assetid': asset['_id'],
         'ibooks_link': asset['ibooks_link'],
         'title': asset_results['name'],
-        'subtitle': asset_results['ebookInfo']['subtitle'],
         'series': (None if asset_results['ebookInfo'].get('seriesInfo') is None else
-                   ' '.join([series_info['seriesName'], '' if series_info['sequenceDisplayLabel'] is None else series_info['sequenceDisplayLabel']])),
+                   ' '.join([series_info['seriesName'], '' if series_info['sequenceNumber'] is None else series_info['sequenceNumber']])),
         'author': asset_results['artistName'],
         'publisher': asset_results['ebookInfo']['publisher'],
         'date': asset_results['releaseDate'],

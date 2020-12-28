@@ -21,6 +21,7 @@ def home():
 @app.route('/books')
 def books():
     books = mongo.books()
+    books = sorted(books, key=lambda x: (x['series'] if x['series'] is not None else x['title'], x['date']))
     return render_template('books.html', title='books', books=books)
 
 @app.route('/asset-get', methods=['GET'])
