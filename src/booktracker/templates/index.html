@@ -7,7 +7,7 @@
             <div class="carousel-inner">
                 {% for b in books %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                    <img src="/books/{{b['assetid']}}/artwork" class="d-block w-100" alt="{{b['assetid']}}">
+                    <img src="/local-assets/{{ b['_id'] }}/artwork" class="d-block w-100" alt="{{ b['_id'] }}">
                 </div>
                 {% endfor %}
             </div>
