@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4 mt-4">
+            <img src="/{{ data_source }}/{{ book['_id'] }}/artwork" class="card-img-top" alt="{{ book['_id'] }}">
+        </div>
+        <div class="col-sm-8 mt-4">
+
+            {% if book['seriesInfo'] %}<p class="my-0">{{ book['seriesInfo']['seriesName'] }}</p>{% endif %}
+            <h3>{{ book['name'] }}</h3>
+            {% if book['ebookInfo']['subtitle'] %}<p>{{ book['ebookInfo']['subtitle'] }}</p>{% endif %}
+            <p class="font-weight-light">{{ book['artistName'] }}</p>
+
+            {% if data_source == 'local-assets' %}
+                <a href="ibooks://assetid/{{ book['_id'] }}" class="btn btn-primary">read</a>
+                <button href="{{ url_for('upsert_book_asset', bookid=book['_id']) }}" class="btn btn-info request-put">update</button>
+                <button href="{{ url_for('delete_book_asset', bookid=book['_id']) }}" class="btn btn-danger request-delete">delete</button>
+            {% else %}
+                <button href="{{ url_for('upsert_book_asset', bookid=book['_id']) }}" class="btn btn-info request-put">add</button>
+            {% endif %}
+
+            <p class="text-muted mt-4">{{ book['ebookInfo']['publisher'] }}, {{ book['releaseDate'] }}</p>
+            <p class="font-weight-light">{{ book['description']['standard'] }}</p>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- jQuery (not slim) and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <!-- make DELETE and PUT requests, add classes request-delete or request-put accordingly -->
+    <script src="{{ url_for('static', path='js/request_rest.js') }}"></script>
+{% endblock %}
