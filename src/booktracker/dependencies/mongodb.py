@@ -8,11 +8,9 @@ class Mongodb:
     def __init__(self):
         self.db = MongoClient('localhost')['booktracker']
 
-
     def list_assets(self):
         c = self.db['content_metadata'].find({}, projection={'_id': True})
         return [r['_id'] for r in c]
-
 
     def read_asset(self, assetid):
         r = self.db['content_metadata'].find_one({'_id': assetid})
@@ -27,7 +25,6 @@ class Mongodb:
         r = self.db['content_metadata'].delete_one({'_id': assetid})
         return {'deleted_count': r.deleted_count}
 
-
     def read_asset_artwork(self, assetid):
         r = self.db['asset_artwork'].find_one({'_id': assetid}, projection={'artwork': True})
         return r['artwork'] if r is not None else None
@@ -40,7 +37,6 @@ class Mongodb:
     def delete_asset_artwork(self, assetid):
         r = self.db['asset_artwork'].delete_one({'_id': assetid})
         return {'deleted_count': r.deleted_count}
-
 
     def read_books(self, assetids=None):
 
@@ -55,7 +51,7 @@ class Mongodb:
             {'$match': filter},
             {'$project': {'results': {'$objectToArray': '$results'}}},
             {'$unwind': '$results'},
-            {'$replaceRoot': {'newRoot': {'$mergeObjects': [ '$results.v', '$$ROOT' ]}}},
+            {'$replaceRoot': {'newRoot': {'$mergeObjects': ['$results.v', '$$ROOT']}}},
             {
                 '$project': {
                     'name': True,
