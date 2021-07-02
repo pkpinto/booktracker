@@ -35,5 +35,10 @@ setup(
     license='Apache License 2.0',
     package_dir={'': 'src'},
     packages=find_namespace_packages(where='src'),
-    install_requires=INSTALL_REQUIRES
+    include_package_data=True,
+    package_data={'booktracker': ['static/*', 'static/*/*', 'templates/*']},
+    install_requires=INSTALL_REQUIRES,
+    entry_points={
+        'console_scripts': ['bookt=booktracker.main:main'],
+    },
 )

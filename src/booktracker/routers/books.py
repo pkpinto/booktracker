@@ -1,19 +1,13 @@
-import io
-from typing import Dict
-
 from aiohttp.client_exceptions import ClientConnectorError
-from fastapi import APIRouter, Body, Depends, HTTPException, Request, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from starlette.types import Receive, Scope, Send
 
-from dependencies.mongodb import Mongodb
-import routers.content_metadata as content_metadata
-import routers.local_assets as local_assets
+from ..dependencies.mongodb import Mongodb
+from ..dependencies.templates import templates
+from . import content_metadata, local_assets
 
 
 router = APIRouter(prefix='/books')
-templates = Jinja2Templates(directory='templates')
 
 
 class Markup(str):
@@ -41,12 +35,13 @@ async def book_detail(request: Request, bookid: str, mongodb: Mongodb = Depends(
     try:
         book = mongodb.read_books(bookid)[0]
         data_source = 'local-assets'
-    except IndexError as e:
+    except IndexError:
 
         try:
             cm = await content_metadata.get_asset(bookid)
-        except ClientConnectorError as e:
-            raise HTTPException(status_code=404, detail='No local content and cannot connect to content metadata server')
+        except ClientConnectorError:
+            raise HTTPException(status_code=404,
+                                detail='No local content and cannot connect to content metadata server')
 
         try:
             b = cm['results'][bookid]
@@ -68,8 +63,9 @@ async def book_detail(request: Request, bookid: str, mongodb: Mongodb = Depends(
                 'standard': b['description']['standard'],
             }
             data_source = 'content-metadata'
-        except KeyError as e:
-            raise HTTPException(status_code=404, detail='No local content and assetid {} not found in content metadata server'.format(bookid))
+        except KeyError:
+            raise HTTPException(status_code=404,
+                                detail='No local content and assetid {} not found in content metadata server'.format(bookid))
 
     book['description']['standard'] = Markup(book['description']['standard'])
 
@@ -77,6 +73,7 @@ async def book_detail(request: Request, bookid: str, mongodb: Mongodb = Depends(
         'book_detail.html',
         {'request': request, 'title': bookid, 'book': book, 'data_source': data_source}
     )
+
 
 @router.put('/{bookid}', summary='Insert assets underlying book')
 @router.patch('/{bookid}', summary='Update assets underlying book')
@@ -90,6 +87,7 @@ async def upsert_book_asset(bookid: str, mongodb: Mongodb = Depends(Mongodb)):
     asset_artwork_r = await local_assets.upsert_asset_artwork(assetid=bookid, file=artwork, mongodb=mongodb)
 
     return {'asset': asset_r, 'asset_artwork': asset_artwork_r}
+
 
 @router.delete('/{bookid}', summary='Delete assets underlying book')
 async def delete_book_asset(bookid: str, mongodb: Mongodb = Depends(Mongodb)):
