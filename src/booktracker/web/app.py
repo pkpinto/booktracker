@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from .dependencies.templates import templates
-from .routers import books, content_metadata, local_assets, root
+from .routers import books, root
 
 
 app = FastAPI(
@@ -18,8 +18,6 @@ app.mount('/static', StaticFiles(directory=static_folder), name='static')
 
 app.include_router(root.router)
 app.include_router(books.router)
-app.include_router(local_assets.router)
-app.include_router(content_metadata.router)
 
 
 @app.exception_handler(HTTPException)
@@ -28,7 +26,7 @@ async def http_exception_handler(request, e):
 
 
 def main():
-    uvicorn.run(app, host='0.0.0.0', port=5000, log_level='info')
+    uvicorn.run(app, host='0.0.0.0', port=5001, log_level='info')
 
 
 if __name__ == '__main__':

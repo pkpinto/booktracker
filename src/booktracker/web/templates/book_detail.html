@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-4 mt-4">
-            <img src="/{{ data_source }}/{{ book['_id'] }}/artwork" class="card-img-top" alt="{{ book['_id'] }}">
+            <img src="{{ book['artwork'] }}" class="card-img-top" alt="{{ book['_id'] }}">
         </div>
         <div class="col-sm-8 mt-4">
 
@@ -13,7 +13,7 @@
             {% if book['ebookInfo']['subtitle'] %}<p>{{ book['ebookInfo']['subtitle'] }}</p>{% endif %}
             <p class="font-weight-light">{{ book['artistName'] }}</p>
 
-            {% if data_source == 'local-assets' %}
+            {% if data_source == 'assets' %}
                 <a href="ibooks://assetid/{{ book['_id'] }}" class="btn btn-primary">read</a>
                 <button href="{{ url_for('upsert_book_asset', bookid=book['_id']) }}" class="btn btn-info request-put">update</button>
                 <button href="{{ url_for('delete_book_asset', bookid=book['_id']) }}" class="btn btn-danger request-delete">delete</button>

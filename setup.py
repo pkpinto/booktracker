@@ -4,6 +4,7 @@ from setuptools import setup, find_namespace_packages
 
 
 INSTALL_REQUIRES = [
+    'asyncstdlib',
     'pymongo==3.11.2',
     'fastapi==0.63.0',
     'jinja2==2.11.2',
@@ -36,9 +37,12 @@ setup(
     package_dir={'': 'src'},
     packages=find_namespace_packages(where='src'),
     include_package_data=True,
-    package_data={'booktracker': ['static/*', 'static/*/*', 'templates/*']},
+    package_data={'booktracker.web': ['static/*', 'static/*/*', 'templates/*']},
     install_requires=INSTALL_REQUIRES,
     entry_points={
-        'console_scripts': ['bookt=booktracker.main:main'],
+        'console_scripts': [
+            'bookt_api=booktracker.api.app:main',
+            'bookt_web=booktracker.web.app:main',
+        ],
     },
 )

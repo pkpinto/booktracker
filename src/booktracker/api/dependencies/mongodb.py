@@ -8,11 +8,15 @@ class Mongodb:
     def __init__(self):
         self.db = MongoClient('localhost')['booktracker']
 
+
+class Asset(Mongodb):
+
     def list_assets(self):
         c = self.db['content_metadata'].find({}, projection={'_id': True})
-        return [r['_id'] for r in c]
+        for r in c:
+            yield r['_id']
 
-    def read_asset(self, assetid):
+    def get_asset(self, assetid):
         r = self.db['content_metadata'].find_one({'_id': assetid})
         return r if r is not None else {}
 
@@ -25,7 +29,7 @@ class Mongodb:
         r = self.db['content_metadata'].delete_one({'_id': assetid})
         return {'deleted_count': r.deleted_count}
 
-    def read_asset_artwork(self, assetid):
+    def get_asset_artwork(self, assetid):
         r = self.db['asset_artwork'].find_one({'_id': assetid}, projection={'artwork': True})
         return r['artwork'] if r is not None else None
 
@@ -38,7 +42,10 @@ class Mongodb:
         r = self.db['asset_artwork'].delete_one({'_id': assetid})
         return {'deleted_count': r.deleted_count}
 
-    def read_books(self, assetids=None):
+
+class Book(Mongodb):
+
+    def get_books(self, assetids=None):
 
         if assetids is None:
             filter = {}
@@ -68,4 +75,4 @@ class Mongodb:
             }
         ]
 
-        return list(self.db['content_metadata'].aggregate(pipeline))
+        yield from self.db['content_metadata'].aggregate(pipeline)
