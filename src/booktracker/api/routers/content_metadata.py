@@ -11,17 +11,14 @@ router = APIRouter(prefix='/content-metadata', tags=['Apple Content Metadata'])
 @a.lru_cache
 async def _query_content_metadata(assetid, store='gb'):
 
-    url = 'https://uclient-api.itunes.apple.com/WebObjects/MZStorePlatform.woa/wa/lookup?version=2&id={}&p=mdm-lockup&caller=MDM&platform=omni&cc={}'.format(assetid, store)
+    url = 'https://uclient-api.itunes.apple.com/WebObjects/MZStorePlatform.woa/wa/lookup?version=2&id={id}&p=mdm-lockup&caller=MDM&platform=omni&cc={store}'.format(id=assetid, store=store)
 
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
-                content = await response.json()
+                return await response.json()
     except aiohttp.ClientConnectionError:
         raise HTTPException(status_code=503, detail='Apple Content Metadata not available')
-
-    content['_id'] = assetid
-    return content
 
 
 @router.get('/{assetid}', summary='Asset details')

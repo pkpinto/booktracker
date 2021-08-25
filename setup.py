@@ -3,15 +3,25 @@
 from setuptools import setup, find_namespace_packages
 
 
+# INSTALL_REQUIRES = [
+#     'asyncstdlib',
+#     'pymongo==3.11.2',
+#     'fastapi==0.63.0',
+#     'jinja2==2.11.2',
+#     'aiohttp==3.7.3',
+#     'aiofiles==0.6.0',
+#     'python-multipart',
+#     'uvicorn==0.13.3',
+# ]
 INSTALL_REQUIRES = [
     'asyncstdlib',
-    'pymongo==3.11.2',
-    'fastapi==0.63.0',
-    'jinja2==2.11.2',
-    'aiohttp==3.7.3',
-    'aiofiles==0.6.0',
+    'pymongo',
+    'fastapi',
+    'jinja2',
+    'aiohttp',
+    'aiofiles',
     'python-multipart',
-    'uvicorn==0.13.3',
+    'uvicorn',
 ]
 
 with open('README.md', 'r') as f:
@@ -20,7 +30,7 @@ with open('README.md', 'r') as f:
 setup(
     name='booktracker',
     version='0.1',
-    description='Tracks Apple books in collection',
+    description='Books, tracked',
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[
