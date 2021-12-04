@@ -6,27 +6,32 @@ import uvicorn
 
 from .dependencies.templates import templates
 from .routers import books, root
+from ..config import config, Config
 
 
-app = FastAPI(
-    title='Booktracker',
-    description='Track books in collection'
-)
+def create_app(config: Config = None) -> FastAPI:
 
-static_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static')
-app.mount('/static', StaticFiles(directory=static_folder), name='static')
+    app = FastAPI(
+        title=config.web.title,
+        description=config.web.description,
+    )
 
-app.include_router(root.router)
-app.include_router(books.router)
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request, e):
+        return templates.TemplateResponse('404.html', {'request': request, 'detail': e.detail}, status_code=404)
 
+    static_folder = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static')
+    app.mount('/static', StaticFiles(directory=static_folder), name='static')
 
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request, e):
-    return templates.TemplateResponse('404.html', {'request': request, 'detail': e.detail}, status_code=404)
+    app.include_router(root.router)
+    app.include_router(books.router, prefix='/books')
+
+    return app
 
 
 def main():
-    uvicorn.run(app, host='0.0.0.0', port=5001, log_level='info')
+    app = create_app(config=config)
+    uvicorn.run(app, host=config.web.host, port=config.web.port)
 
 
 if __name__ == '__main__':

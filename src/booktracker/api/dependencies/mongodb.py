@@ -1,15 +1,14 @@
 from typing import List, Tuple
 
 from pymongo.mongo_client import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
+from starlette.requests import Request
 
 
 class Mongodb:
 
-    def __init__(self):
-        self.db = MongoClient('localhost')['booktracker']
-
-
-class Asset(Mongodb):
+    def __init__(self, host, replicaset, database):
+        self.db = MongoClient(host=host, replicaset=replicaset)[database]
 
     def list_assets(self):
         c = self.db['content_metadata'].find({}, projection={'_id': True})
@@ -42,9 +41,6 @@ class Asset(Mongodb):
         r = self.db['asset_artwork'].delete_one({'_id': assetid})
         return {'deleted_count': r.deleted_count}
 
-
-class Book(Mongodb):
-
     def get_books(self, assetids=None):
 
         if assetids is None:
@@ -76,3 +72,8 @@ class Book(Mongodb):
         ]
 
         yield from self.db['content_metadata'].aggregate(pipeline)
+
+
+# get_mongodb needs `request: Request` to be added to the function signature for dependency resolution
+def get_mongodb(request: Request) -> Mongodb:
+    return request.app.state.mongodb

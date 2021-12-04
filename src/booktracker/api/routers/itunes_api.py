@@ -1,12 +1,12 @@
 import aiohttp
-import asyncstdlib as a
+from asyncstdlib import lru_cache
 from fastapi import APIRouter, HTTPException
 
 
-router = APIRouter(prefix='/itunes-api', tags=['Apple iTunes API'])
+router = APIRouter(tags=['Apple iTunes API'])
 
 
-@a.lru_cache
+@lru_cache
 async def _query_itunes_api(assetid, store='GB'):
 
     url = 'https://itunes.apple.com/lookup?id={id}&country={store}'.format(id=assetid, store=store)
@@ -14,9 +14,12 @@ async def _query_itunes_api(assetid, store='GB'):
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
-                return await response.json(content_type=None)
+                r = await response.json(content_type=None)
+                if 'resultCount' not in r.keys():
+                    raise HTTPException(status_code=404, detail='Apple iTunes API does not return data')
+                return r
     except aiohttp.ClientConnectionError:
-        raise HTTPException(status_code=503, detail='Apple iTunes API not available')
+        raise HTTPException(status_code=503, detail='Apple iTunes API is not available')
 
 
 @router.get('/{assetid}', summary='Asset details')

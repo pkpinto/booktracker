@@ -3,11 +3,11 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <div id="index-carousel" class="carousel slide col-8 mx-auto" data-ride="carousel">
+        <div id="index-carousel" class="carousel slide col-12 mx-auto" data-ride="carousel">
             <div class="carousel-inner">
                 {% for b in books %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                    <img src="/local-assets/{{ b['_id'] }}/artwork" class="d-block w-100" alt="{{ b['_id'] }}">
+                    <img src="{{ b['artwork'] }}" class="d-block w-100" alt="{{ b['_id'] }}">
                 </div>
                 {% endfor %}
             </div>
